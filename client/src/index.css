@@ -1,0 +1,56 @@
+/* fonts */
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+
+@import "tailwindcss";
+
+@theme {
+  --font-inter:     "Inter", sans-serif;
+}
+
+@layer base {
+  :root {
+    --color-bg:             #1c1c1c;
+    --color-text:           #EBEBEB;
+    --scrollbar-thumb:      rgba(255, 255, 255, 0.18);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.28);
+  }
+
+  html {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--color-bg);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: var(--color-bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border: 2px solid var(--color-bg);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.98);
+  }
+}
