@@ -1,55 +1,68 @@
-import { useCallback, useEffect, useState } from 'react'
-import { authApi, ApiError } from '@/lib/api'
-import { type User } from '@/types/auth'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { authApi, ApiError, type AuthResponse } from '@/lib/api'
+
+const AUTH_QUERY_KEY = ['auth', 'me']
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [checkingSession, setCheckingSession] = useState(true)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    authApi
-      .me()
-      .then((data: any) => setUser(data.user))
-      .catch(() => setUser(null))
-      .finally(() => setCheckingSession(false))
-  }, [])
+  const { data, isLoading: checkingSession } = useQuery({
+    queryKey: AUTH_QUERY_KEY,
+    queryFn: () =>
+      authApi.me().catch((e) => {
+        if (e instanceof ApiError && e.status === 401) return { user: null }
+        throw e
+      }),
+    staleTime: 5 * 60 * 1000, // treat session as fresh for 5 min, avoids refetch spam
+  })
 
-  const signup = useCallback(async (email: string, password: string) => {
-    setLoading(true)
-    setError(null)
+  const signupMutation = useMutation({
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      authApi.signup(email, password),
+    onSuccess: (data) => queryClient.setQueryData(AUTH_QUERY_KEY, data),
+  })
+
+  const signinMutation = useMutation({
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      authApi.signin(email, password),
+    onSuccess: (data) => queryClient.setQueryData(AUTH_QUERY_KEY, data),
+  })
+
+  const logoutMutation = useMutation({
+    mutationFn: authApi.logout,
+    onSuccess: () => queryClient.setQueryData(AUTH_QUERY_KEY, { user: null }),
+  })
+
+  const signup = async (email: string, password: string) => {
     try {
-      const data: any = await authApi.signup(email, password)
-      setUser(data.user)
+      await signupMutation.mutateAsync({ email, password })
       return true
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Unable to sign up')
+    } catch {
       return false
-    } finally {
-      setLoading(false)
     }
-  }, [])
+  }
 
-  const signin = useCallback(async (email: string, password: string) => {
-    setLoading(true)
-    setError(null)
+  const signin = async (email: string, password: string) => {
     try {
-      const data: any = await authApi.signin(email, password)
-      setUser(data.user)
+      await signinMutation.mutateAsync({ email, password })
       return true
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Unable to sign in')
+    } catch {
       return false
-    } finally {
-      setLoading(false)
     }
-  }, [])
+  }
 
-  const logout = useCallback(async () => {
-    await authApi.logout().catch(() => {})
-    setUser(null)
-  }, [])
+  const logout = () => logoutMutation.mutateAsync().catch(() => {})
 
-  return { user, checkingSession, loading, error, signup, signin, logout }
+  const activeError = signupMutation.error ?? signinMutation.error
+  const errorMessage = activeError instanceof ApiError ? activeError.message : null
+
+  return {
+    user: (data as AuthResponse | undefined)?.user ?? null,
+    checkingSession,
+    loading: signupMutation.isPending || signinMutation.isPending,
+    error: errorMessage,
+    signup,
+    signin,
+    logout,
+  }
 }
