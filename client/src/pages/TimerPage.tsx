@@ -3,6 +3,7 @@ import { PresetButtons } from '@/components/timer/PresetButtons'
 import { DurationForm } from '@/components/timer/DurationForm'
 import { TimerDisplay } from '@/components/timer/TimerDisplay'
 import { TimerControls } from '@/components/timer/TimerControls'
+import { AuthNotice } from '@/components/auth/AuthNotice'
 
 export default function TimerPage() {
   const { minutes, isRunning, remainingMs, applyMinutes, toggleRunning, reset } = useTimer()
@@ -23,6 +24,8 @@ export default function TimerPage() {
         onToggle={toggleRunning}
         onReset={reset}
       />
+
+      <AuthNotice />
     </div>
   )
 }
