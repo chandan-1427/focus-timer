@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { PasswordInput } from '@/components/auth/PasswordInput'
 import { AuthCard } from '@/components/auth/AuthCard'
 import { EmailInput } from '@/components/auth/EmailInput'
+import { Button } from '@/components/ui/Button'
 
 export default function SignInPage() {
   const { signin, loading, error } = useAuth()
@@ -45,15 +46,10 @@ export default function SignInPage() {
 
         {error && <p className="text-xs text-red-400/80">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-xl bg-white text-black text-sm font-medium py-2.5
-                     hover:opacity-80 active:scale-[0.98] transition cursor-pointer
-                     disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100"
-        >
+        <Button type="submit" disabled={loading}>
           {loading ? 'Signing in…' : 'Sign in'}
-        </button>
+        </Button>
+        
       </form>
     </AuthCard>
   )

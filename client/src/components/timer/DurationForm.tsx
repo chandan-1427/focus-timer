@@ -1,6 +1,7 @@
 import { Clock } from 'lucide-react'
 import { UnitSelect } from './UnitSelect'
 import { useDurationForm } from '@/hooks/useDurationForm'
+import { Button } from '@/components/ui/Button'
 
 export function DurationForm({
   currentMinutes,
@@ -37,15 +38,9 @@ export function DurationForm({
         <UnitSelect unit={unit} setUnit={setUnit} />
       </div>
 
-      <button
-        onClick={handleApplyCustom}
-        disabled={!isValidInput}
-        className="w-full rounded-xl bg-white text-black text-sm font-medium py-2.5
-                   hover:opacity-80 active:scale-[0.98] transition cursor-pointer
-                   disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100"
-      >
+      <Button onClick={handleApplyCustom} disabled={!isValidInput}>
         Set duration
-      </button>
+      </Button>
 
       {!isValidInput && inputValue.trim() !== '' && (
         <p className="text-xs text-red-400/80 -mt-1">Enter a duration greater than 0</p>
