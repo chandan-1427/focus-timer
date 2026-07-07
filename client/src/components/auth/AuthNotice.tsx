@@ -2,10 +2,14 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Cloud, LogOut, ChevronDown } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 export function AuthNotice() {
   const { user, checkingSession, logout } = useAuth()
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useLocalStorage(
+    'auth-notice-open',
+    true
+  )
 
   if (checkingSession) return null
 
@@ -27,7 +31,7 @@ export function AuthNotice() {
   return (
     <div className="w-full max-w-xs rounded-xl border border-white/10 bg-white/5 overflow-hidden">
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen((prev) => !prev)}
         className="w-full flex items-center gap-2 px-3.5 py-3 cursor-pointer text-left"
       >
         <Cloud className="w-4 h-4 text-white/40 shrink-0" />
