@@ -5,6 +5,7 @@ import { env } from './config/env.js'
 import { requestLogger } from './middleware/request-logger.js'
 import { errorHandler } from './middleware/error-handler.js'
 import { authRoutes } from './routes/auth.routes.js'
+import { timerRoutes } from './routes/timer.routes.js'
 
 export const app = new Hono()
 
@@ -25,5 +26,6 @@ app.use(
 
 app.get('/health', (c) => c.json({ status: 'ok' }))
 app.route('/auth', authRoutes)
+app.route('/timer', timerRoutes)
 
 app.notFound((c) => c.json({ error: { code: 'NOT_FOUND', message: 'Route not found' } }, 404))

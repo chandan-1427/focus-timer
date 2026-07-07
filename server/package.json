@@ -10,18 +10,25 @@
     "dev": "tsx watch --env-file=.env src/server.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate --config=src/drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config=src/drizzle.config.ts",
+    "db:studio": "drizzle-kit studio --config=src/drizzle.config.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.0",
     "@supabase/supabase-js": "2.110.0",
+    "drizzle-orm": "0.45.2",
     "hono": "4.12.27",
     "hono-rate-limiter": "^0.5.3",
     "pino": "^9.5.0",
+    "postgres": "^3.4.9",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "dotenv": "^17.4.2",
+    "drizzle-kit": "0.31.4",
     "pino-pretty": "^13.0.0",
     "tsx": "^4.19.0",
     "typescript": "6.0.3"
