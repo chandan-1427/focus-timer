@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Cloud, LogOut, ChevronDown } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
